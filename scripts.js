@@ -1,49 +1,59 @@
-let options = ['Rock', 'Paper', 'Scissors']
+let options = ['Rock', 'Paper', 'Scissors'];
+const button_choice = document.querySelectorAll('button');
+let player_score = 0;
+let computer_score = 0;
+
+const scores = document.querySelector('.scores')
+const show_text = document.querySelector('.container')
+let display = document.createElement('div')
+let p_score = document.createElement('div')
+p_score.textContent = `Player Score: 0`
+let c_score = document.createElement('div')
+c_score.textContent = `Computer Score: 0`
+let final_score = document.createElement('div')
+
+scores.appendChild(p_score)
+scores.appendChild(c_score)
+show_text.appendChild(display);
+show_text.appendChild(final_score)
 
 function getComputerChoice() {
     return options[Math.floor(Math.random() * 3)];
 }
 
-function playerSelection() {
-    while (true) {
-        let choice = prompt(`Your play: ${options}`)
-        if (choice != null && choice.length > 1) {
-            let choice_proper = choice.charAt(0).toUpperCase() + choice.slice(1).toLowerCase();
-            if (options.includes(choice_proper)) {
-                return choice_proper;
-            }
-        }
-    }
-}
-
-function playRound(player, computer) {
-    let player_choice = player();
+function playRound(player_choice, computer) {
     let computer_choice = computer();
     let difference = options.indexOf(player_choice) - options.indexOf(computer_choice);
     if (difference == 0) {
-        console.log(`Tied! ${player_choice} ties with ${computer_choice}`)
+        display.textContent = `Tied! ${player_choice} ties with ${computer_choice}`
         return 0;
     } else if (difference == 1 || difference == -2) {
-        console.log(`You Win! ${player_choice} beats ${computer_choice}`)
+        display.textContent = `You Win! ${player_choice} beats ${computer_choice}`
         return 1;
     } else {
-        console.log(`You Lose! ${computer_choice} beats ${player_choice}`)
+        display.textContent = `You Lose! ${player_choice} loses to ${computer_choice}`
         return -1;
     }
 }
 
 function game() {
-    let score = 0;
-    for (let i = 0; i < 5; i++) {
-        score += playRound(playerSelection, getComputerChoice);
-    }
-    if (score > 0) {
-        console.log("Congratulations, you won!")
-    } else if (score == 0) {
-        console.log("It's a tie!")
-    } else {
-        console.log("Unfortunately, you lost.")
+    if (player_score < 5 && computer_score < 5) {
+        let score = playRound(this.textContent, getComputerChoice);
+        if (score == 1) {
+            player_score += 1
+            p_score.textContent = `Player Score: ${player_score}`
+        } else if (score == -1) {
+            computer_score += 1
+            c_score.textContent = `Computer Score: ${computer_score}`
+        }
+        if (player_score == 5) {
+            final_score.textContent = "Congratulations, you won the game!"
+        } else if (computer_score == 5) {
+            final_score.textContent = "Unfortunately, you lost the game."
+        }
     }
 }
 
-game();
+
+
+button_choice.forEach((button) => {button.addEventListener('click', game)});
